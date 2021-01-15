@@ -1,4 +1,4 @@
-MODULE Socket_T2(SYSMODULE)
+MODULE RobotSide(SYSMODULE)
 
  ! raw data size 64 bytes
  !     xxx   column 1     column 2     column 3    column 4

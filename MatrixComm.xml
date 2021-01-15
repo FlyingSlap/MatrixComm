@@ -11,17 +11,20 @@
 		</lc:DocumentProperties>
 		<SmartComponent name="MatrixComm" icon="MatrixComm.png"
 										codeBehind="MatrixComm.CodeBehind,MatrixComm.dll"
-										canBeSimulated="false">
+										canBeSimulated="true">
 			<Properties>
-				<DynamicProperty name="SampleProperty" valueType="System.Double" value="10">
-					<Attribute key="MinValue" value="0"/>
-					<Attribute key="Quantity" value="Length"/>
+				<DynamicProperty name="IP" group="Parameters" valueType="System.String" value="127.0.0.1">
+				</DynamicProperty>
+				<DynamicProperty name="port" group="Parameters" valueType="System.Int32" value="30002">
+				</DynamicProperty>
+				<DynamicProperty name="Matrix" group="matrix" valueType="System.String" value="Simulation must be started and component activated!" readOnly="true">
+					<Attribute key="Multiline" value="true"/>
 				</DynamicProperty>
 			</Properties>
 			<Bindings>
 			</Bindings>
 			<Signals>
-				<IOSignal name="SampleSignal" signalType="DigitalInput"/>
+				<IOSignal name="Activate" signalType="DigitalInput"/>
 			</Signals>
 			<GraphicComponents>
 			</GraphicComponents>
