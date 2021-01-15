@@ -1,0 +1,113 @@
+MODULE RobotSide(SYSMODULE)
+
+	! raw data size 64 bytes
+	!     xxx   column 1     column 2     column 3    column 4
+	!
+	! r1  [   [1,          -0.000349065,-6.09235E-7, -0.005],
+	! r2      [0.000349066, 0.999998,    0.00174533, -0.001],
+	! r3      [0,          -0.00174533,  0.999998,   -0.00022],
+	! r4      [0,           0,           0,           1]];             
+
+	VAR rawbytes rawData;
+	VAR rawbytes rawInData;
+	VAR rawbytes rawOutData;
+
+	VAR socketdev server_socket;
+	VAR socketdev client_socket;
+	VAR string receive_string;
+	VAR string client_ip;
+	
+	PERS num nTestMatrix{4,4}:=[[138,0,0,0],
+                             	[0,0,0,0],
+                             	[0,0,0,0],
+                             	[0,0,0,0]];
+
+	VAR num nFormatedDataPackage{4,4}:=[[0,0,0,0],
+                             			[0,0,0,0],
+                             			[0,0,0,0],
+                             			[0,0,0,0]];
+
+	PROC PackMatrix_Outraw()
+
+		VAR num nVarNum;
+		VAR num nByNo;
+
+		nByNo:=1;
+		FOR ind FROM 1 TO 4 DO
+			FOR i FROM 1 TO 4 DO
+				PackRawBytes nFormatedDataPackage{i,ind},rawOutData,nByNo+4*(i-1)\Float4;
+			ENDFOR
+			nByNo:=nByNo+16;
+		ENDFOR
+	ENDPROC
+
+
+	PROC UnpackMatrix_Inraw()
+
+		VAR num nVarNum;
+		VAR num nByNo;
+
+		! alternativa (asi :D)
+		!		FOR col FROM 0 TO 3 DO
+		!			FOR row FROM 0 TO 3 DO
+		!				UnpackRawBytes rawInData,4*(4*col + row) + 1,nVarNum\Float4;
+		!				nTestMatrix{row+1,col+1}:=nVarNum;
+		!			ENDFOR
+		!		ENDFOR
+
+		nByNo:=1;
+		FOR indx FROM 1 TO 4 DO
+			FOR i FROM 1 TO 4 DO
+				UnpackRawBytes rawInData,nByNo+4*(i-1),nVarNum\Float4;
+				nTestMatrix{i,indx}:=nVarNum;
+			ENDFOR
+			nByNo:=nByNo+16;
+		ENDFOR
+	ENDPROC
+
+	PROC Test1()
+		PackMatrix_Outraw;
+		UnpackMatrix_Inraw;
+	ENDPROC
+
+	PROC init_comm()
+		SocketClose server_socket;
+		SocketClose client_socket;
+		WaitTime 1;
+		SocketCreate server_socket;
+		SocketBind server_socket,"127.0.0.1",30002;
+		SocketListen server_socket;
+
+		SocketAccept server_socket,client_socket;
+	ENDPROC
+
+	PROC TestServConn()
+
+		ClearRawBytes rawOutData;
+		PackMatrix_Outraw;
+		SocketSend client_socket\rawData:=rawOutData;
+
+		ClearRawBytes rawInData;
+		SocketReceive client_socket\rawData:=rawInData\Time:=2;
+		UnpackMatrix_Inraw;
+		
+		nFormatedDataPackage{1,1} := nFormatedDataPackage{1,1} + 1;
+
+	ERROR
+		TEST ERRNO
+		CASE ERR_SOCK_TIMEOUT:
+			RETURN ;
+		CASE ERR_SOCK_CLOSED:
+			ExitCycle;
+		CASE ERR_SOCK_NET_UNREACH:
+			ErrWrite "NOT reachable", "Network is not reachable";
+			EXIT;
+		DEFAULT:
+			RAISE;
+		ENDTEST
+
+	ENDPROC
+
+
+
+ENDMODULE
