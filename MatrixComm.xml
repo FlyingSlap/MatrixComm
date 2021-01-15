@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<lc:LibraryCompiler xmlns:lc="urn:abb-robotics-robotstudio-librarycompiler"
+										xmlns="urn:abb-robotics-robotstudio-graphiccomponent"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="urn:abb-robotics-robotstudio-librarycompiler file:///C:\Program%20Files%20(x86)\ABB\SDK\RobotStudio%202020%20SDK\LibraryCompilerSchema.xsd
+                                        urn:abb-robotics-robotstudio-graphiccomponent file:///C:\Program%20Files%20(x86)\ABB\SDK\RobotStudio%202020%20SDK\GraphicComponentSchema.xsd">
+	<lc:Library fileName="MatrixComm.rslib">
+		<lc:DocumentProperties>
+			<lc:Author>CZLUSPA</lc:Author>
+			<lc:Image source="MatrixComm.png"/>
+		</lc:DocumentProperties>
+		<SmartComponent name="MatrixComm" icon="MatrixComm.png"
+										codeBehind="MatrixComm.CodeBehind,MatrixComm.dll"
+										canBeSimulated="false">
+			<Properties>
+				<DynamicProperty name="SampleProperty" valueType="System.Double" value="10">
+					<Attribute key="MinValue" value="0"/>
+					<Attribute key="Quantity" value="Length"/>
+				</DynamicProperty>
+			</Properties>
+			<Bindings>
+			</Bindings>
+			<Signals>
+				<IOSignal name="SampleSignal" signalType="DigitalInput"/>
+			</Signals>
+			<GraphicComponents>
+			</GraphicComponents>
+			<Assets>
+				<Asset source="MatrixComm.dll"/>
+			</Assets>
+		</SmartComponent>
+	</lc:Library>
+</lc:LibraryCompiler>
