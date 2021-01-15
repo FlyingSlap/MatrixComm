@@ -74,6 +74,7 @@ namespace MatrixComm
         public override void OnLoad(SmartComponent component)
         {
             Logger.AddMessage(new LogMessage($"{component.Name} component loaded! Simulation must be running in order for it to work!"));
+            component.Properties["Matrix"].Value = "Simulation must be started and component activated!";
         }
 
         public override void OnSimulationStop(SmartComponent component)
@@ -137,10 +138,12 @@ namespace MatrixComm
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            matrix += String.Format("{0:0.0000}",BitConverter.ToSingle(msgBuffer, 4*i + j)).PadRight(20);
+                            matrix += (String.Format("{0:0.00}", BitConverter.ToSingle(msgBuffer, 4 * i + j))).PadRight(12);
                         }
-                        matrix += "\r\n";
-
+                        if (i < 3)
+                        {
+                            matrix += "\r\n";
+                        }
                     }
                     component.Properties["Matrix"].Value = matrix;
 
